@@ -97,13 +97,6 @@ export class OpensprinklerCard extends LitElement {
           @hass-more-info=${this._moreInfo}
         ></opensprinkler-generic-entity-row>
 
-        /* ORIGINAL
-        <div .style=${entities.length ? 'margin-top: 12px' : ''}>
-          ${entities.map(s => this._renderStatus(s))}
-        </div>
-        */
-
-        /* bars_stations - mostrar solo barras configuradas, o todas si no hay config */
         <div .style=${entities.length || this.config.bars_stations?.length ? 'margin-top: 12px' : ''}>
           ${this.config.bars_stations?.length
             ? this._renderConfiguredBars()

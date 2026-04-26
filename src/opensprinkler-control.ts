@@ -129,11 +129,42 @@ export class OpensprinklerControl extends LitElement {
     return css`
       opensprinkler-generic-entity-row { height: var(--opensprinkler-line-height); }
 
+      /* ORIGINAL - botones icono pequeños
       .button {
         color: var(--secondary-text-color);
         --mdc-icon-button-size: 40px;
         margin-inline-end: -8px;
         margin-inline-start: 4px;
+      }
+      */
+
+      /* brix29 - botones circulares 44px para móvil */
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: 22px;
+        background: var(--secondary-background-color);
+        color: var(--primary-text-color);
+        cursor: pointer;
+        margin-inline-start: 8px;
+        flex-shrink: 0;
+        transition: background 0.2s;
+      }
+      .button:hover {
+        background: var(--state-color, var(--secondary-background-color));
+        filter: brightness(0.9);
+      }
+      .button:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      .button ha-svg-icon {
+        width: 22px;
+        height: 22px;
       }
 
       mwc-circular-progress {

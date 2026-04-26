@@ -81,7 +81,7 @@ class OpensprinklerGenericEntityRow extends LitElement {
         display: flex;
         align-items: center;
         flex-direction: row;
-        --mdc-icon-button-size: 40px;
+        /* ORIGINAL - --mdc-icon-button-size: 40px; */
       }
       .info {
         margin-left: 16px;
@@ -119,8 +119,34 @@ class OpensprinklerGenericEntityRow extends LitElement {
       .pointer {
         cursor: pointer;
       }
+
+      /* ORIGINAL - botón tres puntos pequeño
       .more-info {
         color: var(--secondary-text-color);
+      }
+      */
+
+      /* brix29 - botón tres puntos circular 44px para móvil */
+      .more-info {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border: none;
+        border-radius: 22px;
+        background: var(--secondary-background-color);
+        color: var(--secondary-text-color);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: background 0.2s;
+      }
+      .more-info:hover {
+        filter: brightness(0.9);
+      }
+      .more-info ha-svg-icon {
+        width: 22px;
+        height: 22px;
       }
     `;
   }

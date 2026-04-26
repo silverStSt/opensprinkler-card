@@ -223,7 +223,7 @@ export class OpensprinklerCard extends LitElement {
         entity: entityId,
         active_state: ['manual', 'program'],
         filter: true,
-      });
+      } as any);
       return html`<opensprinkler-timer-bar-entity-row
         .config=${config} .hass=${this.hass}>
       </opensprinkler-timer-bar-entity-row>`;

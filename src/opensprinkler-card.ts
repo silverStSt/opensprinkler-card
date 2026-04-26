@@ -96,9 +96,20 @@ export class OpensprinklerCard extends LitElement {
           .secondaryText=${this._secondaryText()}
           @hass-more-info=${this._moreInfo}
         ></opensprinkler-generic-entity-row>
+
+        /* ORIGINAL
         <div .style=${entities.length ? 'margin-top: 12px' : ''}>
           ${entities.map(s => this._renderStatus(s))}
         </div>
+        */
+
+        /* bars_stations - mostrar solo barras configuradas, o todas si no hay config */
+        <div .style=${entities.length || this.config.bars_stations?.length ? 'margin-top: 12px' : ''}>
+          ${this.config.bars_stations?.length
+            ? this._renderConfiguredBars()
+            : entities.map(s => this._renderStatus(s))}
+        </div>
+
           ${ (this.config as any).card_stations ? html`<hui-warning>card_stations has been renamed to extra_entities</hui-warning>` : ''}
           ${this.config.extra_entities ?.length ? html`<div class="extras">
           ${this.config.input_number ? renderState(this.config.input_number, this.hass!) : ''}
@@ -126,6 +137,11 @@ export class OpensprinklerCard extends LitElement {
 
     const input = this.config.input_number?.entity;
     if (input && oldHass.states[input] !== this.hass?.states[input]) return true;
+
+    /* bars_stations - vigilar cambios en los sensores configurados */
+    for (const entityId of this.config.bars_stations ?? []) {
+      if (oldHass.states[entityId] !== this.hass?.states[entityId]) return true;
+    }
 
     return false;
   }
@@ -192,6 +208,26 @@ export class OpensprinklerCard extends LitElement {
     return html`<opensprinkler-timer-bar-entity-row
       .config=${config} .hass=${this.hass}>
     </opensprinkler-timer-bar-entity-row>`;
+  }
+
+  private _renderConfiguredBars() {
+    return this.config.bars_stations!.map(entityId => {
+      if (!this.hass?.states[entityId]) {
+        return html`<hui-warning>Entity ${entityId} not found</hui-warning>`;
+      }
+      const config = fillConfig({
+        icon: this.config.icons.station.idle,
+        active_icon: this.config.icons.station.active,
+        ...this.config.bars,
+        type: 'timer-bar-entity-row',
+        entity: entityId,
+        active_state: ['manual', 'program'],
+        filter: true,
+      });
+      return html`<opensprinkler-timer-bar-entity-row
+        .config=${config} .hass=${this.hass}>
+      </opensprinkler-timer-bar-entity-row>`;
+    });
   }
 
   private _renderExtraEntities() {

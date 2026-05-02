@@ -142,7 +142,7 @@ function nextWeeklyRun(
   // Date.getDay(): 0=Dom..6=Sab → convertimos a 0=Lun..6=Dom
   const todayJs  = new Date().getDay();
   const todayDow = todayJs === 0 ? 6 : todayJs - 1;
-
+  console.log('todayJs:', todayJs, 'todayDow:', todayDow, 'daysBitmask:', daysBitmask, 'bit check:', ((daysBitmask >> todayDow) & 1));
   for (let i = 0; i < 7; i++) {
     const checkDow = (todayDow + i) % 7;
     const isActive = ((daysBitmask >> checkDow) & 1) === 1;

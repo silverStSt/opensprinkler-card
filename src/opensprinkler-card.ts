@@ -17,6 +17,7 @@ import { EntitiesFunc, hasManual, hasRainDelayActive, hasRunOnce, isPlayPausable
 import { renderState } from './opensprinkler-state';
 import { styleMap } from 'lit/directives/style-map';
 import { relativeTime } from './relative_time';
+import { getNextRun, formatNextRun } from './opensprinkler-next-schedule';
 
 // This puts your card into the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
@@ -136,6 +137,16 @@ export class OpensprinklerCard extends LitElement {
       if (oldHass.states[entityId] !== this.hass?.states[entityId]) return true;
     }
 
+    /* next run - vigilar cambios en water level y entidades de programas */
+    const waterLevel = 'sensor.opensprinkler_water_level';
+    if (oldHass.states[waterLevel] !== this.hass?.states[waterLevel]) return true;
+
+    for (const [entityId, state] of Object.entries(this.hass?.states ?? {})) {
+      if (state.attributes?.opensprinkler_type === 'program') {
+        if (oldHass.states[entityId] !== this.hass?.states[entityId]) return true;
+      }
+    }
+
     return false;
   }
 
@@ -205,20 +216,37 @@ export class OpensprinklerCard extends LitElement {
 
   private _renderConfiguredBars() {
     return this.config.bars_stations!.map(entityId => {
-      if (!this.hass?.states[entityId]) {
+      const entity = this.hass?.states[entityId];
+      if (!entity) {
         return html`<hui-warning>Entity ${entityId} not found</hui-warning>`;
       }
+
+      // Estación activa → reutilizar _renderStatus() directamente
+      if (['manual', 'program'].includes(entity.state)) {
+        return this._renderStatus(entity);
+      }
+
+      // Estación inactiva → mostrar próxima ejecución
+      const stationName = entityId
+        .replace(/^sensor\./, '')
+        .replace(/_station_status$/, '');
+      const nextRun = this.hass ? getNextRun(this.hass, stationName) : null;
+      const nextRunText = formatNextRun(nextRun);
+
+      if (!nextRunText) return html``;
+
       const config = fillConfig({
         icon: this.config.icons.station.idle,
-        active_icon: this.config.icons.station.active,
         ...this.config.bars,
         type: 'timer-bar-entity-row',
         entity: entityId,
-        active_state: ['manual', 'program'],
-        filter: true,
+        name: entity.attributes.name,
+        secondary_info: 'none',
       } as any);
+
       return html`<opensprinkler-timer-bar-entity-row
         .config=${config} .hass=${this.hass}>
+        <span slot="secondary">${nextRunText}</span>
       </opensprinkler-timer-bar-entity-row>`;
     });
   }

@@ -140,15 +140,19 @@ function nextWeeklyRun(
   for (let i = 0; i < 7; i++) {
     const checkDow = (todayDow + i) % 7;
     const dayName  = WEEKDAYS[checkDow];
-    if (!getSwitch(hass, `switch.${prefix}_${dayName}_enabled`)) continue;
+    const isActive = getSwitch(hass, `switch.${prefix}_${dayName}_enabled`);
+    console.log('weekly check - i:', i, 'dayName:', dayName, 'isActive:', isActive, 'startMin:', startMin, 'nowMin:', nowMin);
+
+    if (!isActive) continue;
 
     const effectiveStartMin = findNextStartMin(startMin, repeatCount, repeatInterval, nowMin, i);
-    if (effectiveStartMin === null) continue; // todas las repeticiones de este día pasaron
+    console.log('effectiveStartMin:', effectiveStartMin);
+    if (effectiveStartMin === null) continue;
 
     return { daysAhead: i, effectiveStartMin };
   }
 
-  return null; // ningún día activo (no debería ocurrir)
+  return null;
 }
 
 /**

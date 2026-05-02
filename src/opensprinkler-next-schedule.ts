@@ -319,7 +319,7 @@ export function formatNextRun(info: NextRunInfo | null): string {
   else                     when = `${info.date.toLocaleDateString()} a las ${timeStr}`;
 
   // Duración
-  const durationMin = Math.round(info.durationAdjusted / 60);
+  const durationMin = Math.round(info.durationAdjusted);
   const durationStr = info.isRepeat && info.repetitions > 1
     ? `${info.repetitions}× ~${durationMin} min`
     : `~${durationMin} min`;

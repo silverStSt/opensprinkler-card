@@ -113,7 +113,7 @@ function findNextStartMin(
   return null;
 }
 
-typescript/**
+/**
  * Calcula los días hasta el próximo día activo para un programa semanal.
  * Lee los días activos desde number.PREFIX_interval_days como bitmask
  * (bit0=Lun, bit1=Mar, bit2=Mie, bit3=Jue, bit4=Vie, bit5=Sab, bit6=Dom).

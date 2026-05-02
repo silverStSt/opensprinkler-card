@@ -137,7 +137,7 @@ function nextWeeklyRun(
 ): { daysAhead: number; effectiveStartMin: number } | null {
   // Días activos como bitmask desde number.X_interval_days
   // bit0=Lun, bit1=Mar, bit2=Mie, bit3=Jue, bit4=Vie, bit5=Sab, bit6=Dom
-  const daysBitmask = getNumber(hass, `number.${prefix}_interval_days`) ?? 127;
+  const daysBitmask = getNumber(hass, `number.${prefix}_starting_in_days`) ?? 127;
 
   // Date.getDay(): 0=Dom..6=Sab → convertimos a 0=Lun..6=Dom
   const todayJs  = new Date().getDay();

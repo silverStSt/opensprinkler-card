@@ -113,17 +113,19 @@ function findNextStartMin(
   return null;
 }
 
-/**
+typescript/**
  * Calcula los días hasta el próximo día activo para un programa semanal.
+ * Lee los días activos desde number.PREFIX_interval_days como bitmask
+ * (bit0=Lun, bit1=Mar, bit2=Mie, bit3=Jue, bit4=Vie, bit5=Sab, bit6=Dom).
  * Si hoy es día activo pero todas las repeticiones pasaron, busca el siguiente día activo.
  *
- * @param hass      - instancia de HomeAssistant
- * @param prefix    - prefijo del programa
- * @param startMin  - hora de inicio en minutos desde medianoche
+ * @param hass           - instancia de HomeAssistant
+ * @param prefix         - prefijo del programa
+ * @param startMin       - hora de inicio en minutos desde medianoche
  * @param repeatCount    - número de repeticiones
  * @param repeatInterval - minutos entre repeticiones
- * @param nowMin    - minuto actual del día
- * @returns { daysAhead, effectiveStartMin } días hasta la próxima ejecución y hora efectiva
+ * @param nowMin         - minuto actual del día
+ * @returns { daysAhead, effectiveStartMin } días hasta la próxima ejecución y hora efectiva, o null si no hay días activos
  */
 function nextWeeklyRun(
   hass: HomeAssistant,
@@ -133,15 +135,18 @@ function nextWeeklyRun(
   repeatInterval: number,
   nowMin: number
 ): { daysAhead: number; effectiveStartMin: number } | null {
+  // Días activos como bitmask desde number.X_interval_days
+  // bit0=Lun, bit1=Mar, bit2=Mie, bit3=Jue, bit4=Vie, bit5=Sab, bit6=Dom
+  const daysBitmask = getNumber(hass, `number.${prefix}_interval_days`) ?? 127;
+
   // Date.getDay(): 0=Dom..6=Sab → convertimos a 0=Lun..6=Dom
   const todayJs  = new Date().getDay();
   const todayDow = todayJs === 0 ? 6 : todayJs - 1;
 
   for (let i = 0; i < 7; i++) {
     const checkDow = (todayDow + i) % 7;
-    const dayName  = WEEKDAYS[checkDow];
-    const isActive = getSwitch(hass, `switch.${prefix}_${dayName}_enabled`);
-    console.log('weekly check - i:', i, 'dayName:', dayName, 'isActive:', isActive, 'startMin:', startMin, 'nowMin:', nowMin);
+    const isActive = ((daysBitmask >> checkDow) & 1) === 1;
+    console.log('weekly check - i:', i, 'checkDow:', checkDow, 'isActive:', isActive, 'startMin:', startMin, 'nowMin:', nowMin);
 
     if (!isActive) continue;
 

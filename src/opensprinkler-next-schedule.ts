@@ -233,7 +233,9 @@ export function getNextRun(
     const programName = switchState.attributes?.name as string ?? prefix;
 
     // Duración base de la estación en este programa (en segundos)
-    const baseDuration = getNumber(hass, durationEntityId(prefix, stationName));
+    const durationId = durationEntityId(prefix, stationName);
+    const baseDuration = getNumber(hass, durationId);
+    console.log('prefix:', prefix, 'durationId:', durationId, 'baseDuration:', baseDuration, 'enabled:', switchState.state);
     if (!baseDuration || baseDuration === 0) continue; // estación no está en este programa
 
     // Tipo de programa

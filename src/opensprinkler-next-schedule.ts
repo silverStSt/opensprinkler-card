@@ -240,16 +240,20 @@ export function getNextRun(
 
     // Tipo de programa
     const type = getString(hass, `select.${prefix}_type`);
+    console.log('type:', type, 'select entity:', `select.${prefix}_type`);
+
     if (!type) continue;
 
     // Hora de inicio principal
     const startTimeStr = getString(hass, `time.${prefix}_start_time`);
+    console.log('startTimeStr:', startTimeStr);
     if (!startTimeStr) continue;
     const startMin = timeToMinutes(startTimeStr);
 
     // Repeticiones
     const repeatCount    = getNumber(hass, `number.${prefix}_start_time_repeat_count`) ?? 0;
     const repeatInterval = getNumber(hass, `number.${prefix}_start_time_repeat_interval`) ?? 0;
+    console.log('repeatCount:', repeatCount, 'repeatInterval:', repeatInterval);
     const isRepeat       = repeatCount > 0 && repeatInterval > 0;
 
     // Calcular próxima ejecución según tipo

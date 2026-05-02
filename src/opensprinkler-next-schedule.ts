@@ -313,18 +313,17 @@ export function getNextRun(
 export function formatNextRun(info: NextRunInfo | null): string {
   if (!info) return '';
 
-  const now       = new Date();
-  const diffMs    = info.date.getTime() - now.getTime();
-  const diffMin   = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMin / 60);
+  const now     = new Date();
+  const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const nextDate  = new Date(info.date.getFullYear(), info.date.getMonth(), info.date.getDate());
+  const diffDays  = Math.round((nextDate.getTime() - todayDate.getTime()) / 86400000);
 
   const timeStr = info.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   // Cuándo
   let when: string;
-  if (diffMin < 60)        when = `En ${diffMin} min`;
-  else if (diffHours < 24) when = `Hoy a las ${timeStr}`;
-  else if (diffHours < 48) when = `Mañana a las ${timeStr}`;
+  if (diffDays === 0)      when = `Hoy a las ${timeStr}`;
+  else if (diffDays === 1) when = `Mañana a las ${timeStr}`;
   else                     when = `${info.date.toLocaleDateString()} a las ${timeStr}`;
 
   // Duración

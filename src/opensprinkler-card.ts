@@ -231,8 +231,9 @@ export class OpensprinklerCard extends LitElement {
         .replace(/^sensor\./, '')
         .replace(/_station_status$/, '');
       const nextRun = this.hass ? getNextRun(this.hass, stationName) : null;
+      console.log('stationName:', stationName, 'nextRun:', nextRun);
       const nextRunText = formatNextRun(nextRun);
-
+      console.log('nextRunText:', nextRunText);
       if (!nextRunText) return html``;
 
       const config = fillConfig({

@@ -217,7 +217,8 @@ export function getNextRun(
     entityId.endsWith('_program_enabled') &&
     state.attributes?.opensprinkler_type === 'program'
   );
-
+  console.log('programSwitches encontrados:', programSwitches.map(([id]) => id));
+  console.log('buscando stationName:', stationName);
   let earliest: NextRunInfo | null = null;
 
   for (const [switchEntityId, switchState] of programSwitches) {

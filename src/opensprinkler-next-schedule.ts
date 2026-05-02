@@ -259,12 +259,11 @@ export function getNextRun(
     // Calcular próxima ejecución según tipo
     let result: { daysAhead: number; effectiveStartMin: number } | null = null;
 
-    if (type === 'weekly') {
-      result = nextWeeklyRun(hass, prefix, startMin, repeatCount, repeatInterval, nowMin);
-    } else if (type === 'interval') {
-      result = nextIntervalRun(hass, prefix, startMin, repeatCount, repeatInterval, nowMin);
+    if (type.toLowerCase() === 'weekly') {
+    result = nextWeeklyRun(hass, prefix, startMin, repeatCount, repeatInterval, nowMin);
+    } else if (type.toLowerCase() === 'interval') {
+    result = nextIntervalRun(hass, prefix, startMin, repeatCount, repeatInterval, nowMin);
     }
-
     if (!result) continue;
 
     // Construir la fecha de la próxima ejecución

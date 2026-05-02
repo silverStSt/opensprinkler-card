@@ -234,21 +234,16 @@ export class OpensprinklerCard extends LitElement {
       console.log('stationName:', stationName, 'nextRun:', nextRun);
       const nextRunText = formatNextRun(nextRun);
       console.log('nextRunText:', nextRunText);
-      if (!nextRunText) return html``;
-
-      const config = fillConfig({
-        icon: this.config.icons.station.idle,
-        ...this.config.bars,
-        type: 'timer-bar-entity-row',
+      const idleConfig = {
         entity: entityId,
         name: entity.attributes.name,
-        secondary_info: 'none',
-      } as any);
+        icon: this.config.icons.station.idle,
+      };
 
-      return html`<opensprinkler-timer-bar-entity-row
-        .config=${config} .hass=${this.hass}>
-        <span slot="secondary">${nextRunText}</span>
-      </opensprinkler-timer-bar-entity-row>`;
+      return html`<opensprinkler-generic-entity-row
+        .config=${idleConfig} .hass=${this.hass} .stateObj=${entity}
+        .secondaryText=${nextRunText || 'Idle'}>
+      </opensprinkler-generic-entity-row>`;
     });
   }
 

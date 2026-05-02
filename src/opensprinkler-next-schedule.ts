@@ -196,6 +196,7 @@ function nextIntervalRun(
 
   // Todas las repeticiones de hoy pasaron → siguiente ciclo
   const intervalDays = getNumber(hass, `number.${prefix}_interval_days`) ?? 1;
+  console.log('interval: todas las reps pasaron, intervalDays:', intervalDays, 'daysAhead:', intervalDays);
   return { daysAhead: intervalDays, effectiveStartMin: startMin };
 }
 

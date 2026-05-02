@@ -277,8 +277,8 @@ export function getNextRun(
 
     // Construir la fecha de la próxima ejecución
     const next = new Date();
-    next.setHours(Math.floor(result.effectiveStartMin / 60), result.effectiveStartMin % 60, 0, 0);
     next.setDate(next.getDate() + result.daysAhead);
+    next.setHours(Math.floor(result.effectiveStartMin / 60), result.effectiveStartMin % 60, 0, 0);
 
     // ¿Es más próximo que el candidato actual?
     if (earliest !== null && next >= earliest.date) continue;

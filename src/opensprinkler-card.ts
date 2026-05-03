@@ -222,7 +222,7 @@ export class OpensprinklerCard extends LitElement {
       }
 
       // Estación activa → reutilizar _renderStatus() directamente
-      if (['manual', 'program'].includes(entity.state)) {
+      if (['manual', 'program', 'once_program'].includes(entity.state)) {
         return this._renderStatus(entity);
       }
 

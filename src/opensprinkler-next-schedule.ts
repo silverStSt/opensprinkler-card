@@ -142,16 +142,16 @@ function nextWeeklyRun(
   // Date.getDay(): 0=Dom..6=Sab → convertimos a 0=Lun..6=Dom
   const todayJs  = new Date().getDay();
   const todayDow = todayJs === 0 ? 6 : todayJs - 1;
-  console.log('todayJs:', todayJs, 'todayDow:', todayDow, 'daysBitmask:', daysBitmask, 'bit check:', ((daysBitmask >> todayDow) & 1));
+  //console.log('todayJs:', todayJs, 'todayDow:', todayDow, 'daysBitmask:', daysBitmask, 'bit check:', ((daysBitmask >> todayDow) & 1));
   for (let i = 0; i < 7; i++) {
     const checkDow = (todayDow + i) % 7;
     const isActive = ((daysBitmask >> checkDow) & 1) === 1;
-    console.log('weekly check - i:', i, 'checkDow:', checkDow, 'isActive:', isActive, 'startMin:', startMin, 'nowMin:', nowMin);
+    //console.log('weekly check - i:', i, 'checkDow:', checkDow, 'isActive:', isActive, 'startMin:', startMin, 'nowMin:', nowMin);
 
     if (!isActive) continue;
 
     const effectiveStartMin = findNextStartMin(startMin, repeatCount, repeatInterval, nowMin, i);
-    console.log('effectiveStartMin:', effectiveStartMin);
+    //console.log('effectiveStartMin:', effectiveStartMin);
     if (effectiveStartMin === null) continue;
 
     return { daysAhead: i, effectiveStartMin };
@@ -196,7 +196,7 @@ function nextIntervalRun(
 
   // Todas las repeticiones de hoy pasaron → siguiente ciclo
   const intervalDays = getNumber(hass, `number.${prefix}_interval_days`) ?? 1;
-  console.log('interval: todas las reps pasaron, intervalDays:', intervalDays, 'daysAhead:', intervalDays);
+  //console.log('interval: todas las reps pasaron, intervalDays:', intervalDays, 'daysAhead:', intervalDays);
   return { daysAhead: intervalDays, effectiveStartMin: startMin };
 }
 
@@ -227,8 +227,8 @@ export function getNextRun(
     entityId.endsWith('_program_enabled') &&
     state.attributes?.opensprinkler_type === 'program'
   );
-  console.log('programSwitches encontrados:', programSwitches.map(([id]) => id));
-  console.log('buscando stationName:', stationName);
+  //console.log('programSwitches encontrados:', programSwitches.map(([id]) => id));
+  //console.log('buscando stationName:', stationName);
   let earliest: NextRunInfo | null = null;
 
   for (const [switchEntityId, switchState] of programSwitches) {
@@ -245,25 +245,25 @@ export function getNextRun(
     // Duración base de la estación en este programa (en segundos)
     const durationId = durationEntityId(prefix, stationName);
     const baseDuration = getNumber(hass, durationId);
-    console.log('prefix:', prefix, 'durationId:', durationId, 'baseDuration:', baseDuration, 'enabled:', switchState.state);
+    //console.log('prefix:', prefix, 'durationId:', durationId, 'baseDuration:', baseDuration, 'enabled:', switchState.state);
     if (!baseDuration || baseDuration === 0) continue; // estación no está en este programa
 
     // Tipo de programa
     const type = getString(hass, `select.${prefix}_type`);
-    console.log('type:', type, 'select entity:', `select.${prefix}_type`);
+    //console.log('type:', type, 'select entity:', `select.${prefix}_type`);
 
     if (!type) continue;
 
     // Hora de inicio principal
     const startTimeStr = getString(hass, `time.${prefix}_start_time`);
-    console.log('startTimeStr:', startTimeStr);
+    //console.log('startTimeStr:', startTimeStr);
     if (!startTimeStr) continue;
     const startMin = timeToMinutes(startTimeStr);
 
     // Repeticiones
     const repeatCount    = getNumber(hass, `number.${prefix}_start_time_repeat_count`) ?? 0;
     const repeatInterval = getNumber(hass, `number.${prefix}_start_time_repeat_interval`) ?? 0;
-    console.log('repeatCount:', repeatCount, 'repeatInterval:', repeatInterval);
+    //console.log('repeatCount:', repeatCount, 'repeatInterval:', repeatInterval);
     const isRepeat       = repeatCount > 0 && repeatInterval > 0;
 
     // Calcular próxima ejecución según tipo
@@ -318,7 +318,7 @@ export function formatNextRun(info: NextRunInfo | null): string {
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const nextDate  = new Date(info.date.getFullYear(), info.date.getMonth(), info.date.getDate());
   const diffDays  = Math.round((nextDate.getTime() - todayDate.getTime()) / 86400000);
-  console.log('formatNextRun - now:', now, 'info.date:', info.date, 'todayDate:', todayDate, 'nextDate:', nextDate, 'diffDays:', diffDays);
+  //console.log('formatNextRun - now:', now, 'info.date:', info.date, 'todayDate:', todayDate, 'nextDate:', nextDate, 'diffDays:', diffDays);
 
   const timeStr = info.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 

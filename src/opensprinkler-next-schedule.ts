@@ -318,6 +318,7 @@ export function formatNextRun(info: NextRunInfo | null): string {
   const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const nextDate  = new Date(info.date.getFullYear(), info.date.getMonth(), info.date.getDate());
   const diffDays  = Math.round((nextDate.getTime() - todayDate.getTime()) / 86400000);
+  console.log('formatNextRun - now:', now, 'info.date:', info.date, 'todayDate:', todayDate, 'nextDate:', nextDate, 'diffDays:', diffDays);
 
   const timeStr = info.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
